@@ -65,7 +65,8 @@ export function App() {
               return
             }
 
-            newValue.id === "all--employees" // solution to bug 3
+            // solution to bug 3
+            newValue.id === "all--employees"
               ? await loadAllTransactions()
               : await loadTransactionsByEmployee(newValue.id)
           }}
