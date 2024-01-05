@@ -66,7 +66,7 @@ export function App() {
             }
 
             // solution to bug 3
-            newValue.id === "all--employees"
+            newValue.id === ""
               ? await loadAllTransactions()
               : await loadTransactionsByEmployee(newValue.id)
           }}
