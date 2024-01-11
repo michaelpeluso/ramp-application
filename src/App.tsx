@@ -76,18 +76,19 @@ export function App() {
         <div className="RampGrid">
           <Transactions transactions={transactions} />
 
-          {paginatedTransactions?.nextPage !== null && ( // solution to bug 6: hide button if there is no paginated next page
-            <button
-              className="RampButton"
-              disabled={paginatedTransactionsUtils.loading}
-              onClick={async () => {
-                // solution to bug 4: get paginatedTransactions instead of all transactions
-                await paginatedTransactionsUtils.fetchAll()
-              }}
-            >
-              View More
-            </button>
-          )}
+          {paginatedTransactions &&
+            paginatedTransactions?.nextPage && ( // solution to bug 6: hide button if there is no paginated next page
+              <button
+                className="RampButton"
+                disabled={paginatedTransactionsUtils.loading}
+                onClick={async () => {
+                  // solution to bug 4: get paginatedTransactions instead of all transactions
+                  await paginatedTransactionsUtils.fetchAll()
+                }}
+              >
+                View More
+              </button>
+            )}
         </div>
       </main>
     </Fragment>
