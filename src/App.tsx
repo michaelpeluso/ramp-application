@@ -25,7 +25,7 @@ export function App() {
     await employeeUtils.fetchAll()
 
     setIsLoading(false)
-    await paginatedTransactionsUtils.fetchAll() // solution to bug 5: move line after setIsLoading(false)
+    await paginatedTransactionsUtils.fetchAll() // solution to bug 5: setIsLoading(false) before fetching paginated transactions
   }, [employeeUtils, paginatedTransactionsUtils, transactionsByEmployeeUtils])
 
   const loadTransactionsByEmployee = useCallback(
@@ -64,7 +64,7 @@ export function App() {
               return
             }
 
-            // solution to bug 3: get all transactions if id is == ""
+            // solution to bug 3: get all transactions if id is empty
             newValue.id === ""
               ? await loadAllTransactions()
               : await loadTransactionsByEmployee(newValue.id)
@@ -76,7 +76,7 @@ export function App() {
         <div className="RampGrid">
           <Transactions transactions={transactions} />
 
-          {transactions !== null && (
+          {paginatedTransactions?.nextPage !== null && ( // solution to bug 6: hide button if there is no paginated next page
             <button
               className="RampButton"
               disabled={paginatedTransactionsUtils.loading}
