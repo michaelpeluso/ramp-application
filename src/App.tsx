@@ -22,11 +22,10 @@ export function App() {
   const loadAllTransactions = useCallback(async () => {
     setIsLoading(true)
     transactionsByEmployeeUtils.invalidateData()
-
     await employeeUtils.fetchAll()
-    await paginatedTransactionsUtils.fetchAll()
 
     setIsLoading(false)
+    await paginatedTransactionsUtils.fetchAll() // solution to bug 5: move line after setIsLoading(false)
   }, [employeeUtils, paginatedTransactionsUtils, transactionsByEmployeeUtils])
 
   const loadTransactionsByEmployee = useCallback(
@@ -65,8 +64,8 @@ export function App() {
               return
             }
 
-            // solution to bug 3
-            newValue.id === "all--employees"
+            // solution to bug 3: get all transactions if id is == ""
+            newValue.id === ""
               ? await loadAllTransactions()
               : await loadTransactionsByEmployee(newValue.id)
           }}
@@ -82,7 +81,8 @@ export function App() {
               className="RampButton"
               disabled={paginatedTransactionsUtils.loading}
               onClick={async () => {
-                await loadAllTransactions()
+                // solution to bug 4: get paginatedTransactions instead of all transactions
+                await paginatedTransactionsUtils.fetchAll()
               }}
             >
               View More

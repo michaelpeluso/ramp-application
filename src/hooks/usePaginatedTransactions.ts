@@ -22,7 +22,10 @@ export function usePaginatedTransactions(): PaginatedTransactionsResult {
         return response
       }
 
-      return { data: response.data, nextPage: response.nextPage }
+      return {
+        data: [...previousResponse?.data, ...response.data], // solution to bug 4: concatenate previousResponse with spread operator
+        nextPage: response.nextPage,
+      }
     })
   }, [fetchWithCache, paginatedTransactions])
 
