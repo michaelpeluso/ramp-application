@@ -21,7 +21,7 @@ export const InputCheckbox: InputCheckboxComponent = ({ id, checked = false, dis
           disabled={disabled}
           onChange={() => onChange(!checked)}
         />
-        {/* solution to bug 2 */}
+        {/* solution to bug 2: move input inside of label */}
       </label>
     </div>
   )
