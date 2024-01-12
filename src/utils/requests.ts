@@ -47,7 +47,11 @@ export const getTransactionsByEmployee = ({ employeeId }: RequestByEmployeeParam
   return data.transactions.filter((transaction) => transaction.employee.id === employeeId)
 }
 
-export const setTransactionApproval = ({ transactionId, value }: SetTransactionApprovalParams): void => {
+export const setTransactionApproval = ({
+  transactionId,
+  value,
+}: SetTransactionApprovalParams): Promise<void> => {
+  //solution to bug 7: allow functions to return Promise object
   const transaction = data.transactions.find(
     (currentTransaction) => currentTransaction.id === transactionId
   )
@@ -57,4 +61,5 @@ export const setTransactionApproval = ({ transactionId, value }: SetTransactionA
   }
 
   transaction.approved = value
+  return Promise.resolve() //solution to bug 7: reutrn data with new approved values
 }

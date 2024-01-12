@@ -22,7 +22,8 @@ export function useCustomFetch() {
         }
 
         const result = await fakeFetch<TData>(endpoint, params)
-        cache?.current.set(cacheKey, JSON.stringify(result))
+        //cache?.current.set(cacheKey, JSON.stringify(result))
+        clearCacheByEndpoint(["transactionsByEmployee"]) //solution to bug 7: clear cache
         return result
       }),
     [cache, wrappedRequest]
@@ -35,6 +36,7 @@ export function useCustomFetch() {
     ): Promise<TData | null> =>
       wrappedRequest<TData>(async () => {
         const result = await fakeFetch<TData>(endpoint, params)
+
         return result
       }),
     [wrappedRequest]
