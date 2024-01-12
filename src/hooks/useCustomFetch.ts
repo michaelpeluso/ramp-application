@@ -7,6 +7,26 @@ export function useCustomFetch() {
   const { cache } = useContext(AppContext)
   const { loading, wrappedRequest } = useWrappedRequest()
 
+  //solution to bug 7: define clearCacheByEndpoint before used in fetchWithCache
+  const clearCacheByEndpoint = useCallback(
+    (endpointsToClear: RegisteredEndpoints[]) => {
+      if (cache?.current === undefined) {
+        return
+      }
+
+      const cacheKeys = Array.from(cache.current.keys())
+
+      for (const key of cacheKeys) {
+        const clearKey = endpointsToClear.some((endpoint) => key.startsWith(endpoint))
+
+        if (clearKey) {
+          cache.current.delete(key)
+        }
+      }
+    },
+    [cache]
+  )
+
   const fetchWithCache = useCallback(
     async <TData, TParams extends object = object>(
       endpoint: RegisteredEndpoints,
@@ -22,11 +42,10 @@ export function useCustomFetch() {
         }
 
         const result = await fakeFetch<TData>(endpoint, params)
-        //cache?.current.set(cacheKey, JSON.stringify(result))
-        clearCacheByEndpoint(["transactionsByEmployee"]) //solution to bug 7: clear cache
+        clearCacheByEndpoint(["transactionsByEmployee"]) //solution to bug 7: clear transactions list cache
         return result
       }),
-    [cache, wrappedRequest]
+    [cache, wrappedRequest, clearCacheByEndpoint]
   )
 
   const fetchWithoutCache = useCallback(
@@ -49,25 +68,6 @@ export function useCustomFetch() {
 
     cache.current = new Map<string, string>()
   }, [cache])
-
-  const clearCacheByEndpoint = useCallback(
-    (endpointsToClear: RegisteredEndpoints[]) => {
-      if (cache?.current === undefined) {
-        return
-      }
-
-      const cacheKeys = Array.from(cache.current.keys())
-
-      for (const key of cacheKeys) {
-        const clearKey = endpointsToClear.some((endpoint) => key.startsWith(endpoint))
-
-        if (clearKey) {
-          cache.current.delete(key)
-        }
-      }
-    },
-    [cache]
-  )
 
   return { fetchWithCache, fetchWithoutCache, clearCache, clearCacheByEndpoint, loading }
 }
